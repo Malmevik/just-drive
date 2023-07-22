@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
+using Cinemachine.Utility;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class PortalTraveller : MonoBehaviour {
 
@@ -10,9 +14,16 @@ public class PortalTraveller : MonoBehaviour {
     public Material[] originalMaterials { get; set; }
     public Material[] cloneMaterials { get; set; }
 
-    public virtual void Teleport (Transform fromPortal, Transform toPortal, Vector3 pos, Quaternion rot) {
+    public virtual void Teleport (Transform fromPortal, Transform toPortal, Vector3 pos, Quaternion rot)
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
         transform.position = pos;
         transform.rotation = rot;
+
+        float mag = Vector3.Magnitude(rb.velocity);
+        rb.velocity = Vector3.zero;
+        rb.AddForce(transform.forward * mag, ForceMode.VelocityChange);
+      
     }
 
     // Called when first touches portal
