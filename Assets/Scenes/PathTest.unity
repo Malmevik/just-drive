@@ -725,10 +725,13 @@ MonoBehaviour:
   spawnableObject: {fileID: 1533441398}
   start: {fileID: 1700985031}
   end: {fileID: 1697030836}
+  startPosition: {x: 100, y: 0, z: -100}
+  endPosition: {x: 100, y: 0, z: 100}
   spawnRadiusX: 100
   spawnRadiusZ: 100
-  spawnLimit: 3
-  distancing: 50
+  spawnLimitMin: 1
+  spawnLimitMax: 4
+  distancing: 80
 --- !u!4 &1812741193
 Transform:
   m_ObjectHideFlags: 0

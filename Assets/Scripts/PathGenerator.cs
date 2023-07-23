@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = Unity.Mathematics.Random;
 
 public class PathGenerator : MonoBehaviour
@@ -12,12 +13,13 @@ public class PathGenerator : MonoBehaviour
     public GameObject start;
     public GameObject end;
 
-    public Vector3 startPosition;
-    public Vector3 endPosition;
+    public Vector3 startPosition = new(-100, 0, -100);
+    public Vector3 endPosition = new(100, 0, 100);
 
-    public float spawnRadiusX = 100;
-    public float spawnRadiusZ = 100;
-    public uint spawnLimit = 3;
+    public float spawnRadiusX = 100f;
+    public float spawnRadiusZ = 100f;
+    public uint spawnLimitMin = 2;
+    public uint spawnLimitMax = 3;
     public float distancing = 80f;
 
     private List<GameObject> _spawnedObjects;
@@ -77,8 +79,10 @@ public class PathGenerator : MonoBehaviour
     {
         DestructPoints();
 
-        uint maxAttempts = spawnLimit * 10;
+        uint maxAttempts = spawnLimitMax * 10;
         var attempts = 0;
+
+        var spawnLimit = _rand.NextUInt(spawnLimitMin, spawnLimitMax); 
 
         while (_spawnedObjects.Count < spawnLimit)
         {
@@ -132,8 +136,10 @@ public class PathGenerator : MonoBehaviour
 
         InitObjects();
 
-        start.transform.Translate(new Vector3(_minX, transform.position.y, _minZ));
-        end.transform.Translate(new Vector3(_maxX, transform.position.y, _maxZ));
+        // start.transform.Translate(new Vector3(_minX, transform.position.y, _minZ));
+        // end.transform.Translate(new Vector3(_maxX, transform.position.y, _maxZ));
+        start.transform.Translate(startPosition);
+        end.transform.Translate(endPosition);
 
         start.SetActive(true);
         end.SetActive(true);
