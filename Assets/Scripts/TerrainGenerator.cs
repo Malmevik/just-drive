@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using Unity.Mathematics;
 using UnityEngine;
-using Random = Unity.Mathematics.Random;
+using UnityEngine.Rendering.Universal;
+using Random = UnityEngine.Random;
+
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -10,8 +14,9 @@ public class TerrainGenerator : MonoBehaviour
     public float spawnRadiusZ = 100;
     public uint spawnLimit = 500;
     public float distancing = (float)3.0;
+    public float maxSize, minSize;
 
-    private Random _rand;
+  
 
     private Queue<GameObject> _spawnedObjects;
     private Queue<Vector3> _spawnedObjectsPositions;
@@ -57,17 +62,20 @@ public class TerrainGenerator : MonoBehaviour
                 break;
             }
 
-            var newObjectType = spawnableObjects.ElementAt(_rand.NextInt(spawnableObjects.Count));
+            var newObjectType = spawnableObjects.ElementAt(Random.Range(0, spawnableObjects.Count));
             var newPosition = new Vector3(
-                _rand.NextFloat(spawnArea.x, spawnArea.x + spawnArea.width),
+                Random.Range(spawnArea.x, spawnArea.x + spawnArea.width),
                 position.y,
-                _rand.NextFloat(spawnArea.y, spawnArea.y + spawnArea.height)
+               Random.Range(spawnArea.y, spawnArea.y + spawnArea.height)
             );
 
             if (_spawnedObjectsPositions.Any(pos => Vector3.Distance(pos, newPosition) < distancing))
                 continue;
 
-            var newObject = Instantiate(newObjectType, newPosition, transform.rotation);
+            var size = Random.Range(minSize, maxSize);
+            Quaternion rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+            var newObject = Instantiate(newObjectType, newPosition, rotation, transform);
+            newObject.transform.localScale = new Vector3(size, size, size);
             _spawnedObjects.Enqueue(newObject);
             _spawnedObjectsPositions.Enqueue(newPosition);
         }
@@ -77,19 +85,8 @@ public class TerrainGenerator : MonoBehaviour
     void Start()
     {
         InvokeRepeating(nameof(Log), 0, 1);
-
-        _rand = new Random(1);
         _spawnedObjects = new Queue<GameObject>();
         _spawnedObjectsPositions = new Queue<Vector3>();
-        // InvokeRepeating(nameof(Generate), 0, (float)0.1);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            Generate();
-        }
+        Generate();
     }
 }
