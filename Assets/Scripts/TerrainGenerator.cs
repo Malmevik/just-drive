@@ -6,10 +6,10 @@ using Random = Unity.Mathematics.Random;
 public class TerrainGenerator : MonoBehaviour
 {
     public List<GameObject> spawnableObjects;
-    public float spawnRadiusX = 10;
-    public float spawnRadiusZ = 10;
-    public uint spawnLimit = 10;
-    public float distancing = (float)1.0;
+    public float spawnRadiusX = 100;
+    public float spawnRadiusZ = 100;
+    public uint spawnLimit = 500;
+    public float distancing = (float)3.0;
 
     private Random _rand;
 

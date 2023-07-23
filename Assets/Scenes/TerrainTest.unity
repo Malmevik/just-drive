@@ -376,18 +376,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnableObjects:
-  - {fileID: 919132149155446097, guid: 76b4819df5f3cd1468123c6dfbf735e0, type: 3}
-  - {fileID: 919132149155446097, guid: f69684f0f3b945c48a6136234ec9a371, type: 3}
-  - {fileID: 919132149155446097, guid: c5d7f5cbb95c9014c9014c5cfdb41ecd, type: 3}
-  - {fileID: 919132149155446097, guid: 42f6d345e482b3a468308c03f2864f8a, type: 3}
-  - {fileID: 919132149155446097, guid: f6790bac099cc7642b77cedcdd86645e, type: 3}
-  - {fileID: 919132149155446097, guid: 2d436834a82e2d345a3a7a873a8d6084, type: 3}
-  - {fileID: 919132149155446097, guid: c9c2d7fba5433af42a4355021b0c9f69, type: 3}
-  - {fileID: 919132149155446097, guid: 49b0b3e2025dcdc459b9c94cf3ffcb36, type: 3}
+  - {fileID: 156708999}
   spawnRadiusX: 100
   spawnRadiusZ: 100
   spawnLimit: 500
-  distancing: 2.5
+  distancing: 3
 --- !u!4 &793666424
 Transform:
   m_ObjectHideFlags: 0
