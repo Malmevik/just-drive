@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Splines;
 using Random = Unity.Mathematics.Random;
 
 public class PathGenerator : MonoBehaviour
@@ -21,6 +22,8 @@ public class PathGenerator : MonoBehaviour
     public uint spawnLimitMin = 2;
     public uint spawnLimitMax = 3;
     public float distancing = 80f;
+
+    public float turnAngleLimit = 90f;
 
     private List<GameObject> _spawnedObjects;
     private List<Vector3> _spawnedObjectsPositions;
@@ -71,6 +74,11 @@ public class PathGenerator : MonoBehaviour
         if (_spawnedObjectsPositions.Any(pos => Vector3.Distance(pos, newPosition) < distancing))
             return;
 
+        var copy = _spawnedObjectsPositions.ToList();
+        copy.Add(newPosition);
+        if (HasSharpTurns(copy))
+            return;
+
         _spawnedObjects.Add(Instantiate(spawnableObject, newPosition, transform.rotation));
         _spawnedObjectsPositions.Add(newPosition);
     }
@@ -82,7 +90,7 @@ public class PathGenerator : MonoBehaviour
         uint maxAttempts = spawnLimitMax * 10;
         var attempts = 0;
 
-        var spawnLimit = _rand.NextUInt(spawnLimitMin, spawnLimitMax); 
+        var spawnLimit = _rand.NextUInt(spawnLimitMin, spawnLimitMax);
 
         while (_spawnedObjects.Count < spawnLimit)
         {
@@ -122,10 +130,45 @@ public class PathGenerator : MonoBehaviour
             {
                 Debug.DrawLine(prev.transform.position, o.transform.position, Color.green);
             }
+
             prev = o;
         }
 
         if (prev != null) Debug.DrawLine(prev.transform.position, end.transform.position, Color.green);
+    }
+
+    bool HasSharpTurns(List<Vector3> list, bool debug = false)
+    {
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (i < 2)
+                continue;
+
+            var a = list[i - 2];
+            var b = list[i];
+
+            // var angle = Vector2.Angle(list[i - 2], list[i]);
+            var angle = Vector2.Angle(new Vector2(a.x, a.z), new Vector2(b.x, b.z));
+
+            if (debug)
+                Debug.Log(angle);
+
+            if (angle < turnAngleLimit)
+                return true;
+
+            if (angle > (360 - turnAngleLimit))
+                return true;
+        }
+
+        return false;
+    }
+
+    void GenerateKnots()
+    {
+        var knots = new List<BezierKnot>();
+        _spawnedObjectsPositions.ForEach(x => knots.Add(new BezierKnot(x)));
+        // knots.ForEach(x => Debug.Log(x));
+        Debug.Log(knots.Count);
     }
 
 
@@ -158,7 +201,10 @@ public class PathGenerator : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             GeneratePoints();
+            // GenerateKnots();
             DrawClosestPath();
+            Debug.Log("-----");
+            HasSharpTurns(_spawnedObjectsPositions, debug: true);
             Debug.Break();
         }
     }

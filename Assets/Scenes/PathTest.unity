@@ -732,6 +732,7 @@ MonoBehaviour:
   spawnLimitMin: 1
   spawnLimitMax: 4
   distancing: 80
+  turnAngleLimit: 90
 --- !u!4 &1812741193
 Transform:
   m_ObjectHideFlags: 0
